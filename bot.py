@@ -304,9 +304,9 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 *📋 Semua Fitur:*
 
 📊 *Harga & Analisis*
-/harga `<koin>` — Harga real-time
-/grafik `<koin>` — Chart harga 7 hari
-/sinyal `<koin>` — Sinyal trading (RSI, MACD, MA, BB)
+/harga <koin> — Harga real-time
+/grafik <koin> — Chart harga 7 hari
+/sinyal <koin> — Sinyal trading (RSI, MACD, MA, BB)
 /trending — Crypto trending
 
 🔔 *Alert Harga*
@@ -316,11 +316,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 💼 *Portfolio*
 /portfolio — Lihat portfolio & P&L
-/tambah\_aset — Tambah aset ke portfolio
-/hapus\_aset — Hapus aset dari portfolio
+/tambah_aset — Tambah aset ke portfolio
+/hapus_aset — Hapus aset dari portfolio
 
 📒 *Trade Journal*
-/tambah\_trade — Catat trade baru
+/tambah_trade — Catat trade baru
 /tradesaya — Riwayat trade
 /rekap — Rekap harian
 /rekapbulanan — Rekap bulanan
@@ -335,7 +335,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
          InlineKeyboardButton("🔔 Alert", callback_data="menu_alert")],
         [InlineKeyboardButton("📒 Catat Trade", callback_data="menu_trade")]
     ]
-    await update.message.reply_text(text, parse_mode="Markdown",
+    await update.message.reply_text(text, parse_mode="HTML",
                                      reply_markup=InlineKeyboardMarkup(keyboard))
 
 # ============================================================
@@ -343,13 +343,13 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ============================================================
 async def cek_harga(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
-        await update.message.reply_text("❌ Contoh: `/harga bitcoin`", parse_mode="Markdown")
+        await update.message.reply_text("❌ Contoh: /harga bitcoin", parse_mode="HTML")
         return
     query = " ".join(context.args).lower()
     msg = await update.message.reply_text("⏳ Mengambil data...")
     coins = await search_coin(query)
     if not coins:
-        await msg.edit_text(f"❌ Koin *{query}* tidak ditemukan.", parse_mode="Markdown")
+        await msg.edit_text(f"❌ Koin *{query}* tidak ditemukan.", parse_mode="HTML")
         return
     coin = coins[0]
     price_data = await get_price(coin["id"])
@@ -379,14 +379,14 @@ async def cek_harga(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("🔔 Alert", callback_data=f"alert_{coin['id']}_{coin['name']}_{sym}"),
          InlineKeyboardButton("💼 + Portfolio", callback_data=f"port_add_{coin['id']}_{coin['name']}_{sym}")]
     ]
-    await msg.edit_text(text, parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(keyboard))
+    await msg.edit_text(text, parse_mode="HTML", reply_markup=InlineKeyboardMarkup(keyboard))
 
 # ============================================================
 # COMMAND: /grafik
 # ============================================================
 async def grafik_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
-        await update.message.reply_text("❌ Contoh: `/grafik bitcoin`", parse_mode="Markdown")
+        await update.message.reply_text("❌ Contoh: /grafik bitcoin", parse_mode="HTML")
         return
     query = " ".join(context.args).lower()
     msg = await update.message.reply_text("⏳ Memuat grafik...")
@@ -425,9 +425,9 @@ async def _show_grafik(msg, coin_id: str, coin_name: str, coin_symbol: str, days
     text = f"""
 {change_emoji} *{coin_name} ({coin_symbol}) — {label}*
 
-```
+``
 {chart}
-```
+`
 📊 *Statistik {label}:*
 • Tertinggi: *{fmt_price(high)}*
 • Terendah: *{fmt_price(low)}*
@@ -440,14 +440,14 @@ async def _show_grafik(msg, coin_id: str, coin_name: str, coin_symbol: str, days
          InlineKeyboardButton("30H", callback_data=f"chart_30_{coin_id}_{coin_symbol}")],
         [InlineKeyboardButton("🤖 Lihat Sinyal", callback_data=f"sinyal_{coin_id}_{coin_symbol}")]
     ]
-    await msg.edit_text(text, parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(keyboard))
+    await msg.edit_text(text, parse_mode="HTML", reply_markup=InlineKeyboardMarkup(keyboard))
 
 # ============================================================
 # COMMAND: /sinyal
 # ============================================================
 async def sinyal_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not context.args:
-        await update.message.reply_text("❌ Contoh: `/sinyal bitcoin`", parse_mode="Markdown")
+        await update.message.reply_text("❌ Contoh: /sinyal bitcoin", parse_mode="HTML")
         return
     query = " ".join(context.args).lower()
     msg = await update.message.reply_text("⏳ Menganalisis indikator teknikal...")
@@ -538,7 +538,7 @@ _{overall_desc}_
         [InlineKeyboardButton("🔔 Pasang Alert", callback_data=f"alert_{coin_id}_{coin_name}_{coin_symbol}"),
          InlineKeyboardButton("📈 Lihat Grafik", callback_data=f"grafik_{coin_id}_{coin_symbol}")]
     ]
-    await msg.edit_text(text, parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(keyboard))
+    await msg.edit_text(text, parse_mode="HTML", reply_markup=InlineKeyboardMarkup(keyboard))
 
 # ============================================================
 # COMMAND: /portfolio
@@ -552,8 +552,8 @@ async def portfolio_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         text = """💼 *Portfolio kamu kosong!*
 
 Tambahkan aset dengan:
-/tambah\_aset — Masukkan koin, jumlah, dan harga beli"""
-        await update.message.reply_text(text, parse_mode="Markdown")
+/tambah_aset — Masukkan koin, jumlah, dan harga beli"""
+        await update.message.reply_text(text, parse_mode="HTML")
         return
 
     msg = await update.message.reply_text("⏳ Menghitung portfolio...")
@@ -606,15 +606,15 @@ Tambahkan aset dengan:
          InlineKeyboardButton("🗑️ Hapus Aset", callback_data="menu_hapus_aset")],
         [InlineKeyboardButton("🔄 Refresh", callback_data="refresh_portfolio")]
     ]
-    await msg.edit_text(text, parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(keyboard))
+    await msg.edit_text(text, parse_mode="HTML", reply_markup=InlineKeyboardMarkup(keyboard))
 
 # ============================================================
 # CONVERSATION: Tambah Aset Portfolio
 # ============================================================
 async def tambah_aset_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "💼 *TAMBAH ASET KE PORTFOLIO*\n\nMasukkan nama koin:\n(contoh: `bitcoin`, `ethereum`)\n\n/batal untuk batalkan.",
-        parse_mode="Markdown"
+        "💼 *TAMBAH ASET KE PORTFOLIO*\n\nMasukkan nama koin:\n(contoh: bitcoin, ethereum)\n\n/batal untuk batalkan.",
+        parse_mode="HTML"
     )
     return WAITING_PORT_COIN
 
@@ -633,8 +633,8 @@ async def port_coin_received(update: Update, context: ContextTypes.DEFAULT_TYPE)
     await msg.edit_text(
         f"✅ *{coin['name']}* ({coin['symbol'].upper()})\n"
         f"💵 Harga sekarang: *{fmt_price(current)}*\n\n"
-        f"Masukkan *jumlah koin* yang kamu miliki:\n(contoh: `0.5` atau `100`)",
-        parse_mode="Markdown"
+        f"Masukkan *jumlah koin* yang kamu miliki:\n(contoh: 0.5 atau 100)",
+        parse_mode="HTML"
     )
     return WAITING_PORT_AMOUNT
 
@@ -643,12 +643,12 @@ async def port_amount_received(update: Update, context: ContextTypes.DEFAULT_TYP
         amount = float(update.message.text.strip().replace(",", ""))
         if amount <= 0: raise ValueError
     except ValueError:
-        await update.message.reply_text("❌ Jumlah tidak valid. Contoh: `0.5`", parse_mode="Markdown")
+        await update.message.reply_text("❌ Jumlah tidak valid. Contoh: 0.5", parse_mode="HTML")
         return WAITING_PORT_AMOUNT
     context.user_data["port_amount"] = amount
     await update.message.reply_text(
-        f"Jumlah: *{amount}* koin\n\nMasukkan *harga beli* dalam USD:\n(contoh: `45000`)\n\nKetik `0` untuk pakai harga sekarang.",
-        parse_mode="Markdown"
+        f"Jumlah: *{amount}* koin\n\nMasukkan *harga beli* dalam USD:\n(contoh: 45000)\n\nKetik 0 untuk pakai harga sekarang.",
+        parse_mode="HTML"
     )
     return WAITING_PORT_BUY_PRICE
 
@@ -657,7 +657,7 @@ async def port_buy_price_received(update: Update, context: ContextTypes.DEFAULT_
         buy_price = float(update.message.text.strip().replace(",", ""))
         if buy_price < 0: raise ValueError
     except ValueError:
-        await update.message.reply_text("❌ Harga tidak valid.", parse_mode="Markdown")
+        await update.message.reply_text("❌ Harga tidak valid.", parse_mode="HTML")
         return WAITING_PORT_BUY_PRICE
 
     # Kalau 0, pakai harga sekarang
@@ -690,7 +690,7 @@ async def port_buy_price_received(update: Update, context: ContextTypes.DEFAULT_
         f"💵 Harga Beli: {fmt_price(buy_price)}\n"
         f"💰 Total Invested: {fmt_price(total)}\n\n"
         f"Ketik /portfolio untuk lihat semua aset kamu!",
-        parse_mode="Markdown"
+        parse_mode="HTML"
     )
     return ConversationHandler.END
 
@@ -719,7 +719,7 @@ async def hapus_aset_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def alert_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "🔔 *PASANG ALERT HARGA*\n\nMasukkan nama koin:\n\n/batal untuk batalkan.",
-        parse_mode="Markdown"
+        parse_mode="HTML"
     )
     return WAITING_COIN
 
@@ -738,8 +738,8 @@ async def alert_coin_received(update: Update, context: ContextTypes.DEFAULT_TYPE
     await msg.edit_text(
         f"✅ *{coin['name']}* ({coin['symbol'].upper()})\n"
         f"💵 Harga sekarang: *{fmt_price(current)}*\n\n"
-        f"Masukkan harga target (USD):\nContoh: `45000` atau `0.5`",
-        parse_mode="Markdown"
+        f"Masukkan harga target (USD):\nContoh: 45000 atau 0.5",
+        parse_mode="HTML"
     )
     return WAITING_PRICE
 
@@ -748,7 +748,7 @@ async def alert_price_received(update: Update, context: ContextTypes.DEFAULT_TYP
         price = float(update.message.text.strip().replace(",", ""))
         if price <= 0: raise ValueError
     except ValueError:
-        await update.message.reply_text("❌ Harga tidak valid.", parse_mode="Markdown")
+        await update.message.reply_text("❌ Harga tidak valid.", parse_mode="HTML")
         return WAITING_PRICE
     context.user_data["alert_price"] = price
     keyboard = [
@@ -757,7 +757,7 @@ async def alert_price_received(update: Update, context: ContextTypes.DEFAULT_TYP
     ]
     await update.message.reply_text(
         f"Target: *{fmt_price(price)}*\n\nKirim notif ketika harga:",
-        parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(keyboard)
+        parse_mode="HTML", reply_markup=InlineKeyboardMarkup(keyboard)
     )
     return WAITING_DIRECTION
 
@@ -786,7 +786,7 @@ async def alert_direction_received(update: Update, context: ContextTypes.DEFAULT
         f"🎯 Target: *{fmt_price(context.user_data['alert_price'])}*\n"
         f"📡 Kondisi: Harga *{dir_text}* target\n\n"
         f"Notifikasi otomatis akan dikirim! 🔔",
-        parse_mode="Markdown"
+        parse_mode="HTML"
     )
     return ConversationHandler.END
 
@@ -801,7 +801,7 @@ async def list_alert(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for i, a in enumerate(alerts, 1):
         d = "📈 NAIK >" if a["direction"] == "above" else "📉 TURUN <"
         text += f"{i}. *{a['coin_name']}* ({a['coin_symbol']})\n   {d} {fmt_price(a['target_price'])}\n\n"
-    await update.message.reply_text(text, parse_mode="Markdown")
+    await update.message.reply_text(text, parse_mode="HTML")
 
 async def hapus_alert(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
@@ -816,7 +816,7 @@ async def hapus_alert(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def tambah_trade_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "📒 *CATAT TRADE BARU*\n\nMasukkan nama koin:\n\n/batal untuk batalkan.",
-        parse_mode="Markdown"
+        parse_mode="HTML"
     )
     return WAITING_TRADE_COIN
 
@@ -832,7 +832,7 @@ async def trade_coin_received(update: Update, context: ContextTypes.DEFAULT_TYPE
     keyboard = [[InlineKeyboardButton("🟢 BUY", callback_data="trade_BUY")],
                 [InlineKeyboardButton("🔴 SELL", callback_data="trade_SELL")]]
     await msg.edit_text(f"✅ *{coin['name']}*\n\nJenis trade:",
-                         parse_mode="Markdown", reply_markup=InlineKeyboardMarkup(keyboard))
+                         parse_mode="HTML", reply_markup=InlineKeyboardMarkup(keyboard))
     return WAITING_TRADE_TYPE
 
 async def trade_type_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -841,7 +841,7 @@ async def trade_type_received(update: Update, context: ContextTypes.DEFAULT_TYPE
     context.user_data["trade_type"] = query.data.split("_")[1]
     await query.edit_message_text(
         f"Tipe: *{context.user_data['trade_type']}*\n\nHarga trade (USD):",
-        parse_mode="Markdown"
+        parse_mode="HTML"
     )
     return WAITING_TRADE_PRICE
 
@@ -850,10 +850,10 @@ async def trade_price_received(update: Update, context: ContextTypes.DEFAULT_TYP
         price = float(update.message.text.strip().replace(",", ""))
         if price <= 0: raise ValueError
     except ValueError:
-        await update.message.reply_text("❌ Harga tidak valid.", parse_mode="Markdown")
+        await update.message.reply_text("❌ Harga tidak valid.", parse_mode="HTML")
         return WAITING_TRADE_PRICE
     context.user_data["trade_price"] = price
-    await update.message.reply_text(f"Harga: *{fmt_price(price)}*\n\nJumlah koin:", parse_mode="Markdown")
+    await update.message.reply_text(f"Harga: *{fmt_price(price)}*\n\nJumlah koin:", parse_mode="HTML")
     return WAITING_TRADE_AMOUNT
 
 async def trade_amount_received(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -861,14 +861,14 @@ async def trade_amount_received(update: Update, context: ContextTypes.DEFAULT_TY
         amount = float(update.message.text.strip().replace(",", ""))
         if amount <= 0: raise ValueError
     except ValueError:
-        await update.message.reply_text("❌ Jumlah tidak valid.", parse_mode="Markdown")
+        await update.message.reply_text("❌ Jumlah tidak valid.", parse_mode="HTML")
         return WAITING_TRADE_AMOUNT
     context.user_data["trade_amount"] = amount
     total = amount * context.user_data["trade_price"]
     context.user_data["trade_total"] = total
     await update.message.reply_text(
-        f"Jumlah: *{amount}* | Total: *{fmt_price(total)}*\n\nTambah catatan (atau ketik `-`):",
-        parse_mode="Markdown"
+        f"Jumlah: *{amount}* | Total: *{fmt_price(total)}*\n\nTambah catatan (atau ketik -`):",
+        parse_mode="HTML"
     )
     return WAITING_TRADE_NOTE
 
@@ -897,7 +897,7 @@ async def trade_note_received(update: Update, context: ContextTypes.DEFAULT_TYPE
         f"✅ *Trade dicatat!*\n\n{emoji} *{trade['type']}* {trade['coin_name']}\n"
         f"💵 {fmt_price(trade['price'])} × {trade['amount']} = *{fmt_price(trade['total'])}*\n"
         f"📅 {trade['date']}" + (f"\n📝 {note}" if note else ""),
-        parse_mode="Markdown"
+        parse_mode="HTML"
     )
     return ConversationHandler.END
 
@@ -913,7 +913,7 @@ async def trade_saya(update: Update, context: ContextTypes.DEFAULT_TYPE):
     for t in reversed(recent):
         e = "🟢" if t["type"] == "BUY" else "🔴"
         text += f"{e} *{t['type']}* {t['coin_symbol']} | {fmt_price(t['price'])} × {t['amount']} = *{fmt_price(t['total'])}*\n📅 {t['date']}\n\n"
-    await update.message.reply_text(text, parse_mode="Markdown")
+    await update.message.reply_text(text, parse_mode="HTML")
 
 async def rekap_harian(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
@@ -932,7 +932,7 @@ async def rekap_harian(update: Update, context: ContextTypes.DEFAULT_TYPE):
         emoji = "🟢" if t["type"] == "BUY" else "🔴"
         text += f"{emoji} {t['type']} {t['coin_symbol']} — {fmt_price(t['total'])}\n"
     text += f"\n━━━━━━━━━━━━━━\n📥 BUY: *{fmt_price(total_buy)}*\n📤 SELL: *{fmt_price(total_sell)}*\n{e} P&L: *{fmt_price(pnl)}*\n📑 Jumlah: *{len(trades)}* trade"
-    await update.message.reply_text(text, parse_mode="Markdown")
+    await update.message.reply_text(text, parse_mode="HTML")
 
 async def rekap_bulanan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = str(update.effective_user.id)
@@ -958,7 +958,7 @@ async def rekap_bulanan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         pe = "🟢" if pl >= 0 else "🔴"
         text += f"• *{sym}*: {s['count']} trade | {pe} {fmt_price(pl)}\n"
     text += f"\n━━━━━━━━━━━━━━\n📥 BUY: *{fmt_price(total_buy)}*\n📤 SELL: *{fmt_price(total_sell)}*\n{e} P&L: *{fmt_price(pnl)}*\n📑 Total: *{len(trades)}* trade"
-    await update.message.reply_text(text, parse_mode="Markdown")
+    await update.message.reply_text(text, parse_mode="HTML")
 
 async def trending_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg = await update.message.reply_text("⏳ Memuat trending...")
@@ -971,37 +971,37 @@ async def trending_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         c = item.get("item", {})
         text += f"{i}. *{c.get('name')}* ({c.get('symbol','').upper()}) — Rank #{c.get('market_cap_rank','?')}\n"
     text += f"\n🕐 {datetime.now().strftime('%d/%m/%Y %H:%M')}"
-    await msg.edit_text(text, parse_mode="Markdown")
+    await msg.edit_text(text, parse_mode="HTML")
 
 async def bantuan(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = """
 📖 *PANDUAN CRYPTOBOT PRO*
 
 📊 *HARGA & ANALISIS*
-`/harga bitcoin` — Harga real-time
-`/grafik bitcoin` — Chart ASCII 7/14/30 hari
-`/sinyal bitcoin` — RSI, MACD, MA, Bollinger Bands
-`/trending` — Crypto trending
+/harga bitcoin — Harga real-time
+/grafik bitcoin — Chart ASCII 7/14/30 hari
+/sinyal bitcoin — RSI, MACD, MA, Bollinger Bands
+/trending — Crypto trending
 
 🔔 *ALERT*
-`/alert` — Pasang alert harga
-`/listalert` — Lihat alert aktif
-`/hapusalert` — Hapus semua alert
+/alert — Pasang alert harga
+/listalert — Lihat alert aktif
+/hapusalert — Hapus semua alert
 
 💼 *PORTFOLIO*
-`/portfolio` — Lihat semua aset & total P&L
-`/tambah_aset` — Tambah koin ke portfolio
-`/hapus_aset` — Hapus koin dari portfolio
+/portfolio — Lihat semua aset & total P&L
+/tambah_aset — Tambah koin ke portfolio
+/hapus_aset — Hapus koin dari portfolio
 
 📒 *TRADE JOURNAL*
-`/tambah_trade` — Catat trade BUY/SELL
-`/tradesaya` — Riwayat 10 trade terakhir
-`/rekap` — Rekap P&L hari ini
-`/rekapbulanan` — Rekap P&L bulan ini
+/tambah_trade — Catat trade BUY/SELL
+/tradesaya — Riwayat 10 trade terakhir
+/rekap — Rekap P&L hari ini
+/rekapbulanan — Rekap P&L bulan ini
 
 ⚠️ _Bot ini bukan saran finansial. DYOR!_
 """
-    await update.message.reply_text(text, parse_mode="Markdown")
+    await update.message.reply_text(text, parse_mode="HTML")
 
 # ============================================================
 # CALLBACK HANDLER
@@ -1033,7 +1033,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             name = data["portfolio"][user_id][coin_id]["name"]
             del data["portfolio"][user_id][coin_id]
             save_data(data)
-            await query.edit_message_text(f"✅ *{name}* dihapus dari portfolio.", parse_mode="Markdown")
+            await query.edit_message_text(f"✅ *{name}* dihapus dari portfolio.", parse_mode="HTML")
         else:
             await query.edit_message_text("❌ Aset tidak ditemukan.")
     elif d == "refresh_portfolio":
@@ -1050,7 +1050,7 @@ async def callback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         parts = d.split("_")
         await query.edit_message_text(
             f"Gunakan /tambah_aset untuk menambahkan koin ke portfolio.",
-            parse_mode="Markdown"
+            parse_mode="HTML"
         )
 
 async def batal(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -1089,9 +1089,9 @@ async def check_alerts(app: Application):
                             f"💵 Sekarang: *{fmt_price(current)}*\n"
                             f"🎯 Target: *{fmt_price(target)}*\n\n"
                             f"⚡ Saatnya action!\n\n"
-                            f"Ketik `/sinyal {alert['coin_id']}` untuk analisis teknikal."
+                            f"Ketik /sinyal {alert['coin_id']} untuk analisis teknikal."
                         ),
-                        parse_mode="Markdown"
+                        parse_mode="HTML"
                     )
                 except Exception as e:
                     logger.error(f"Alert error {user_id}: {e}")
