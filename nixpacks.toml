@@ -1,0 +1,14 @@
+[phases.install]
+cmds = ["pip install python-telegram-bot==21.6 aiohttp==3.10.5 APScheduler==3.10.4"]
+```
+
+**2.** Push:
+```
+git add .
+git commit -m "add nixpacks config"
+git push
+```
+
+**Atau cara alternatif** — di Railway dashboard, klik service Crypto-bot → **Settings** → cari **"Custom Build Command"** → isi:
+```
+pip install python-telegram-bot==21.6 aiohttp==3.10.5 APScheduler==3.10.4
